@@ -1,0 +1,15 @@
+.main {
+	display: flex;
+	position: relative;
+	width: 340px;
+	height: 10px;
+	margin: 10px auto 40px;
+}
+
+.icon {
+	position: absolute;
+	color: rgb(2, 11, 65);
+	right: 5px;
+	top: 2px;
+	z-index: 1;
+}

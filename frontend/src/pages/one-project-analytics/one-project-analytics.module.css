@@ -1,0 +1,46 @@
+.analytics-main {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	width: 80 vw;
+}
+
+.back-arrow {
+	display: flex;
+	justify-content: start;
+	margin-bottom: 20px;
+}
+
+.bar-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.header {
+	display: flex;
+	justify-content: center;
+	font-size: 18px;
+	font-weight: 700;
+	align-items: center;
+	padding-left: 5px;
+}
+
+.div-bar {
+	display: flex;
+	width: 600px;
+	color: white;
+	background-color: #b980ff;
+	margin-bottom: 10px;
+}
+
+.bar {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.no-data {
+	display: flex;
+	align-items: center;
+	margin: 0 auto;
+}

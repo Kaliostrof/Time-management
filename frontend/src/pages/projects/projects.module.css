@@ -1,0 +1,53 @@
+.main-projects {
+	display: flex;
+	flex-direction: column;
+	width: 90vw;
+	/* height: 40vh; */
+}
+
+.head {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.list-and-search {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+}
+
+.project-list {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 20px 20px 80px;
+}
+
+.no-projects {
+	font-size: 18px;
+	margin-top: 40px;
+	text-align: center;
+	color: white;
+}
+
+/* .btn {
+	background-color: #c5a5f8;
+	color: black;
+	padding: 1px 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.btn:active,
+.btn:hover {
+	border: 1px solid #0b13a0;
+	background-color: #d2bbf8;
+}
+
+.btn:focus,
+.btn:focus-visible {
+	outline: 6px auto -webkit-focus-ring-color;
+} */

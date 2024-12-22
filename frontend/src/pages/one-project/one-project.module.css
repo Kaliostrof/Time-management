@@ -1,0 +1,49 @@
+.one-project {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.project-card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 74vw;
+	min-width: 524px;
+	background-color: #ae8de4;
+	color: #0d0057;
+	border-radius: 8px;
+	margin: 0 auto;
+	margin-bottom: 30px;
+	padding: 2px 4px;
+	border: 1px solid #2e0177;
+	box-shadow: 3px 3px rgb(28, 0, 128);
+}
+.title {
+	width: 15rem;
+}
+
+.icon {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.icon-choise {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.task {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: #c48de4;
+	width: 70vw;
+	font-size: 12px;
+	color: #0d0057;
+	border-radius: 8px;
+	margin-bottom: 6px;
+}

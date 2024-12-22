@@ -1,0 +1,25 @@
+.card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 320vw;
+	background-color: #ae8de4;
+	color: black;
+	border-radius: 8px;
+	margin: 0 auto;
+	margin-bottom: 12px;
+	padding: 2px 4px;
+}
+
+.card > a {
+	display: flex;
+	align-items: center;
+	height: 30px;
+	color: rgb(2, 11, 65);
+}
+
+.icon {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}

@@ -1,0 +1,25 @@
+.main {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 300px;
+	box-sizing: border-box;
+	background: linear-gradient(#9d88be, #552199);
+	color: black;
+	border-radius: 6px;
+	padding: 0 5px;
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.link {
+	text-decoration: underline;
+	color: black;
+	font-size: 20px;
+}

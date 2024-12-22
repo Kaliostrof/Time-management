@@ -1,0 +1,26 @@
+.main {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	bottom: 140px;
+	width: 80vw;
+	margin: 0 0 20px;
+	padding: 0 35px;
+}
+
+.current-page {
+	width: 80em;
+	height: 32px;
+	margin: 0 5px;
+	font-size: 16px;
+	font-weight: 500;
+	line-height: 26px;
+	text-align: center;
+	border: 1px solid #000;
+	border-radius: 6px;
+}
+
+.btn {
+	margin: 0 5px;
+}
