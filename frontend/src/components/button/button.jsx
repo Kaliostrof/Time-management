@@ -24,7 +24,7 @@ export const Button = styled(ButtonContainer)`
 		border: 1px solid #0b13a0;
 		background-color: #d2bbf8;
 		cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-	}
+	};
 
 	&:focus {
 		outline: 6px auto -webkit-focus-ring-color;

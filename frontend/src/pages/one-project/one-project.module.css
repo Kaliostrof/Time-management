@@ -5,6 +5,12 @@
 	align-items: center;
 }
 
+.back-arrow {
+	display: flex;
+	justify-content: start;
+	margin-bottom: 20px;
+}
+
 .project-card {
 	display: flex;
 	align-items: center;

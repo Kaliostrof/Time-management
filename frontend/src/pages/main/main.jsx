@@ -3,9 +3,12 @@ import Select from 'react-select';
 import styles from './main.module.css';
 import { Icon, Loader } from '../../components';
 import { request } from '../../utils';
-import { useSelector } from 'react-redux';
-import { selectUserLogin } from '../../selectors';
+import { useDispatch } from 'react-redux';
+// import { selectUserLogin } from '../../selectors';
 import { useNavigate } from 'react-router-dom';
+import { Tooltip } from '../../components/tooltip/tooltip';
+import { AddNewProject } from '../projects/components';
+import { createProjectAsync } from '../../actions';
 
 export const Main = ({ mainProjects, setMainProjects }) => {
 	const [selectedOption, setSelectedOption] = useState(null);
@@ -14,11 +17,15 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 	const [isPlay, setIsPlay] = useState(false);
 	const [task, setTask] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
-	const isUser = useSelector(selectUserLogin);
+	const [projectTitle, setProjectTitle] = useState('');
+	const [isRefresh, setIsRefresh] = useState(false);
+	// const isUser = useSelector(selectUserLogin);
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	useLayoutEffect(() => {
-		if (isUser) {
+		const usr = sessionStorage.getItem('userData');
+		if (usr) {
 			setIsLoading(true);
 			request('/projects', 'GET')
 				.then(({ data: { projects } }) => {
@@ -28,11 +35,18 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 		} else {
 			navigate('/login');
 		}
-	}, [setMainProjects]);
+	}, [setMainProjects, isRefresh]);
 
 	const projectsOption = mainProjects.map((project) => {
 		return { value: project.title, label: project.title, id: project.id };
 	});
+
+	const onCreate = () => {
+		dispatch(createProjectAsync({ title: projectTitle })).then(() => {
+			setProjectTitle('');
+			setIsRefresh(!isRefresh);
+		});
+	};
 
 	const timer = () => {
 		setTime((prev) => {
@@ -72,23 +86,29 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 	};
 
 	const onStop = (event) => {
-		setIsPlay(false);
-		let hr = time.hr;
-		let min = time.min;
-		let sec = time.sec;
-		if (hr > 0) {
-			min = min + hr * 60;
+		if (isPlay) {
+			setIsPlay(false);
+			let hr = time.hr;
+			let min = time.min;
+			let sec = time.sec;
+			if (hr > 0) {
+				min = min + hr * 60;
+			}
+			if (min > 0) {
+				sec = sec + min * 60;
+			}
+			const totalSec = sec;
+			event.preventDefault();
+			request(`/projects/${selectedOption.id}/tasks`, 'POST', {
+				task,
+				time,
+				totalSec,
+			});
+			setTask('');
+			setIntervalId('');
+			clearInterval(intervalId);
+			setTime({ sec: 0, min: 0, hr: 0 });
 		}
-		if (min > 0) {
-			sec = sec + min * 60;
-		}
-		const totalSec = sec;
-		event.preventDefault();
-		request(`/projects/${selectedOption.id}/tasks`, 'POST', { task, time, totalSec });
-		setTask('');
-		setIntervalId('');
-		clearInterval(intervalId);
-		setTime({ sec: 0, min: 0, hr: 0 });
 	};
 
 	return (
@@ -97,29 +117,42 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 				<Loader />
 			) : (
 				<div className={styles.card}>
+					<div className={styles['new-project']}>
+						<AddNewProject
+							onCreate={onCreate}
+							projectTitle={projectTitle}
+							setProjectTitle={setProjectTitle}
+						/>
+					</div>
 					<div className={styles.timer}>
 						<div className={styles.text}>
 							{`${time.hr.toString().padStart(2, '0')}:${time.min.toString().padStart(2, '0')}:${time.sec.toString().padStart(2, '0')}`}
 						</div>
 						<div className={styles.buttons}>
-							<Icon
-								id="fa-play-circle-o"
-								margin=" 0 10px 0 10px"
-								onClick={onPlay}
-								disabled={isPlay}
-							/>
-							<Icon
-								id="fa-pause-circle-o"
-								margin=" 0 10px 0 10px"
-								onClick={onPause}
-								disabled={!isPlay}
-							/>
-							<Icon
-								id="fa-stop-circle-o"
-								margin=" 0 10px 0 10px"
-								onClick={onStop}
-								disabled={!isPlay}
-							/>
+							<Tooltip text="Выберите проект и заполните описание">
+								<Icon
+									id="fa-play-circle-o"
+									margin=" 0 10px 0 10px"
+									onClick={onPlay}
+									disabled={isPlay}
+								/>
+							</Tooltip>
+							<Tooltip customClass={styles['tooltip-min']} text="Пауза">
+								<Icon
+									id="fa-pause-circle-o"
+									margin=" 0 10px 0 10px"
+									onClick={onPause}
+									disabled={!isPlay}
+								/>
+							</Tooltip>
+							<Tooltip text="Завершает таймер и сохраняет данные">
+								<Icon
+									id="fa-stop-circle-o"
+									margin=" 0 10px 0 10px"
+									onClick={onStop}
+									disabled={!isPlay}
+								/>
+							</Tooltip>
 						</div>
 					</div>
 					<Select
@@ -134,7 +167,7 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 						className={styles.task}
 						value={task}
 						onChange={onAddTask}
-						placeholder="Добавьте описание"
+						placeholder="Добавьте описание задачи"
 					></textarea>
 				</div>
 			)}

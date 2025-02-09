@@ -19,7 +19,11 @@ export const AddNewProject = ({ onCreate, projectTitle, setProjectTitle }) => {
 				disabled={!projectTitle}
 			>
 				Создать
-				<Icon id="fa-plus-square-o" margin=" 4px 0 0 10px" />
+				<Icon
+					id="fa-plus-square-o"
+					margin=" 4px 0 0 10px"
+					disabled={!projectTitle}
+				/>
 			</Button>
 		</div>
 	);

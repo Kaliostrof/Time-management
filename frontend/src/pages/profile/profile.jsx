@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './profile.module.css';
 import * as yup from 'yup';
 import { selectUserDateOfBirth, selectUserId, selectUserLogin } from '../../selectors';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { Button, Icon } from '../../components';
 import { AuthFormError } from '../../components';
 import { request } from '../../utils';
@@ -43,7 +43,7 @@ export const Profile = () => {
 	const [serverError, setServerError] = useState(null);
 	const [isLoginEdit, setIsLoginEdit] = useState(false);
 	const [isDateEdit, setIsDateEdit] = useState(false);
-	const [isPasswordEdit, setIsPasswordEdit] = useState(false);
+	// const [isPasswordEdit, setIsPasswordEdit] = useState(false);
 	const dispatch = useDispatch();
 	const userId = useSelector(selectUserId);
 	const userLogin = useSelector(selectUserLogin);
@@ -53,13 +53,15 @@ export const Profile = () => {
 		.join('-');
 
 	const [login, setLogin] = useState(userLogin);
+	const [checkLogin, setCheckLogin] = useState(false);
+	const [checkBirthDate, setCheckBirthDate] = useState(false);
 	const [birthDate, setBirthDate] = useState(userDateOfBirth);
 	const [oldPassword, setOldPassword] = useState('');
 	const [newPassword, setNewPassword] = useState('');
 	const [repeatPassword, setRepeatPassword] = useState('');
 	const [error, setError] = useState(null);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const userData = sessionStorage.getItem('userData');
 		if (!userData) {
 			return;
@@ -67,6 +69,11 @@ export const Profile = () => {
 	}, []);
 
 	const onLoginChange = ({ target }) => {
+		if (target.value !== userLogin) {
+			setCheckLogin(true);
+		} else {
+			setCheckLogin(false);
+		}
 		setLogin(target.value);
 
 		const newError = validateAndGetErrorMessage(loginChangeSchema, target.value);
@@ -85,6 +92,7 @@ export const Profile = () => {
 				return;
 			}
 			dispatch(setUser(user));
+			setCheckLogin(false);
 			setIsLoginEdit(false);
 			sessionStorage.setItem('userData', JSON.stringify(user));
 		});
@@ -92,6 +100,12 @@ export const Profile = () => {
 
 	const onBirthDateChange = ({ target }) => {
 		const date = target.value.split('.').reverse().join('-');
+		if (date !== userDateOfBirth) {
+			setCheckBirthDate(true);
+		} else {
+			setCheckBirthDate(false);
+		}
+
 		setBirthDate(date);
 	};
 	const onSaveBirthDate = () => {
@@ -141,7 +155,7 @@ export const Profile = () => {
 	};
 
 	const onSavePassword = () => {
-		setIsPasswordEdit(true);
+		// setIsPasswordEdit(true);
 		request(`/users/${userId}/password`, 'PATCH', {
 			login,
 			oldPassword,
@@ -149,10 +163,10 @@ export const Profile = () => {
 		}).then(({ error }) => {
 			if (error) {
 				setServerError(`Ошибка запроса: ${error}`);
-				setIsPasswordEdit(false);
+				// setIsPasswordEdit(false);
 				return;
 			}
-			setIsPasswordEdit(false);
+			// setIsPasswordEdit(false);
 			setError('Пароль изменён');
 			setOldPassword('');
 			setNewPassword('');
@@ -192,7 +206,7 @@ export const Profile = () => {
 									id="fa-check-circle-o"
 									size="18px"
 									margin="0 8px 0 0"
-									disabled={!!error}
+									disabled={!!error || !checkLogin}
 									onClick={onSaveLogin}
 								/>
 
@@ -208,6 +222,7 @@ export const Profile = () => {
 								id="fa-pencil-square-o"
 								size="18px"
 								margin="0 8px 0 0"
+								disabled={isDateEdit}
 								onClick={() => setIsLoginEdit(true)}
 							/>
 						)}
@@ -232,7 +247,7 @@ export const Profile = () => {
 									size="18px"
 									margin="0 8px 0 0"
 									type="submit"
-									disabled={!!error}
+									disabled={!!error || !checkBirthDate}
 									onClick={onSaveBirthDate}
 								/>
 								<Icon
@@ -247,6 +262,7 @@ export const Profile = () => {
 								id="fa-pencil-square-o"
 								size="18px"
 								margin="0 8px 0 0"
+								disabled={isLoginEdit}
 								onClick={() => setIsDateEdit(true)}
 							/>
 						)}
@@ -283,7 +299,9 @@ export const Profile = () => {
 						type="submit"
 						width="175px"
 						onClick={onSavePassword}
-						disabled={!!error || isPasswordEdit}
+						disabled={
+							!!error || !(oldPassword && newPassword && repeatPassword)
+						}
 					>
 						Изменить пароль
 					</Button>

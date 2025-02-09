@@ -10,10 +10,10 @@ import {
 import { Bar } from 'react-chartjs-2';
 import styles from './analytics.module.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectUserLogin } from '../../selectors';
+// import { useSelector } from 'react-redux';
+// import { selectUserLogin } from '../../selectors';
 import { useLayoutEffect, useState } from 'react';
-import { Loader } from '../../components';
+import { Icon, Loader } from '../../components';
 import { request } from '../../utils';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -36,11 +36,12 @@ export const Analytics = ({ mainProjects, setMainProjects }) => {
 	let time = [];
 	let taskCount = [];
 	const [isLoading, setIsLoading] = useState(false);
-	const isUser = useSelector(selectUserLogin);
+	// const isUser = useSelector(selectUserLogin);
 	const navigate = useNavigate();
 
 	useLayoutEffect(() => {
-		if (isUser) {
+		const usr = sessionStorage.getItem('userData');
+		if (usr) {
 			setIsLoading(true);
 			request('/projects', 'GET')
 				.then(({ data: { projects } }) => {
@@ -105,7 +106,11 @@ export const Analytics = ({ mainProjects, setMainProjects }) => {
 						<div className={styles['bar-card']}>
 							<div className={styles['task-card']}>
 								<div className={styles.header}>
-									Можете выбрать аналитику по каждому проекту:
+									<div>Аналитика по проектам</div>
+									<Icon
+										id="fa-angle-double-down"
+										margin=" -2px 10px 0 10px"
+									/>
 								</div>
 								<div className={styles['task-list']}>
 									{mainProjects.map((project) => {

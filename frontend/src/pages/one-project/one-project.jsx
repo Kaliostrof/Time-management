@@ -5,12 +5,13 @@ import { request } from '../../utils';
 import { saveProjectAsync, setProjectData } from '../../actions';
 import { closeModal, openModal, removeTaskAsync } from '../../actions';
 import { selectProject } from '../../selectors';
-import { Icon, Input, Loader } from '../../components';
+import { Button, Icon, Input, Loader } from '../../components';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export const OneProject = () => {
 	const params = useParams();
 	const [projectTitle, setProjectTitle] = useState('');
+	const [titleCheck, setTitleCheck] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +56,15 @@ export const OneProject = () => {
 		);
 	}
 
+	const onInputChange = ({ target }) => {
+		if (target.value !== project.title) {
+			setTitleCheck(true);
+		} else {
+			setTitleCheck(false);
+		}
+		setProjectTitle(target.value);
+	};
+
 	const onSaveEdit = () => {
 		let newTitle = projectTitle;
 		if (!newTitle) {
@@ -66,6 +76,7 @@ export const OneProject = () => {
 				navigate(`/projects/${params.id}`);
 				setIsEdit(false);
 				setIsRefresh(!isRefresh);
+				setTitleCheck(false);
 			});
 		}
 	};
@@ -93,6 +104,12 @@ export const OneProject = () => {
 
 	return (
 		<div>
+			<div className={styles['back-arrow']}>
+				<Button type="button" width="110px" onClick={() => navigate('/projects')}>
+					<Icon id="fa-arrow-circle-left" size="28px" margin="0 8px 0 0" />
+					Назад
+				</Button>
+			</div>
 			{isLoading ? (
 				<Loader />
 			) : (
@@ -103,7 +120,7 @@ export const OneProject = () => {
 								disabled={!isEdit}
 								value={projectTitle}
 								height="25px"
-								onChange={(event) => setProjectTitle(event.target.value)}
+								onChange={onInputChange}
 							></Input>
 						</div>
 
@@ -119,6 +136,7 @@ export const OneProject = () => {
 										id="fa-check-circle-o"
 										size="18px"
 										margin="0 8px 0 0"
+										disabled={!titleCheck}
 										onClick={onSaveEdit}
 									/>
 									<Icon

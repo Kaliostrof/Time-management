@@ -23,3 +23,20 @@
 	justify-content: space-between;
 	align-items: center;
 }
+
+.tooltip-min {
+	position: absolute;
+	width: 140px;
+	padding: 4px 12px;
+	margin-left: calc(50%);
+	margin-top: calc(-80%);
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	color: #ffffff;
+	background-color: #7b06db;
+	border-radius: 12px;
+	text-align: center;
+	font-weight: 700;
+	pointer-events: none;
+}

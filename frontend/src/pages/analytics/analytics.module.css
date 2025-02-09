@@ -6,21 +6,34 @@
 }
 
 .task-card {
-	display: flex;
-	flex-direction: column;
-	align-items: left;
+	display: inline-block;
+	position: relative;
 	margin-bottom: 20px;
 	border: 1px solid rgb(128, 91, 180);
 }
 
+.task-card:hover .task-list {
+	display: block;
+}
+
 .header {
+	display: flex;
 	font-size: 18px;
 	font-weight: 700;
 	padding-left: 5px;
+	cursor: pointer;
 }
 
 .task-list {
-	display: block;
+	display: none;
+	position: absolute;
+	right: 1px;
+	background-color: #3f1772;
+	opacity: 0.9;
+	border-radius: 8px;
+	min-width: 160px;
+	box-shadow: 6px 8px 16px 6px rgba(0, 0, 0, 0.2);
+	z-index: 1;
 }
 
 .task-list ul {
@@ -28,6 +41,10 @@
 	padding-left: 20px;
 	list-style-type: circle;
 	background-color: #562892;
+}
+
+.task-list ul:hover {
+	opacity: 0.7;
 }
 
 .task-card a {
