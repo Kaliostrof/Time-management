@@ -21,9 +21,6 @@ const App = () => {
 
 	useLayoutEffect(() => {
 		const user = sessionStorage.getItem('userData');
-		if (!user) {
-			return;
-		}
 		dispatch(setUser(JSON.parse(user)));
 	}, [dispatch]);
 
@@ -33,6 +30,7 @@ const App = () => {
 				<Header />
 				<div className={styles.page}>
 					<Routes>
+						<Route path="/login" element={<Authorization />} />
 						<Route
 							path="/"
 							element={
@@ -42,7 +40,6 @@ const App = () => {
 								/>
 							}
 						/>
-						<Route path="/login" element={<Authorization />} />
 						<Route path="/register" element={<Registration />} />
 						<Route path="/user/:id" element={<Profile />} />
 						<Route

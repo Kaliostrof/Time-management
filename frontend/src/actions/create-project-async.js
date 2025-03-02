@@ -10,6 +10,3 @@ export const createProjectAsync = (newProjectData) => (dispatch) => {
 		return updatedProject.data;
 	});
 };
-
-// id
-// 		? request(`/projects/${id}`, 'PATCH', newProjectData)

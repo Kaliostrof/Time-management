@@ -22,6 +22,7 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 	// const isUser = useSelector(selectUserLogin);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const user = sessionStorage.getItem('userData');
 
 	useLayoutEffect(() => {
 		const usr = sessionStorage.getItem('userData');
@@ -122,6 +123,7 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 							onCreate={onCreate}
 							projectTitle={projectTitle}
 							setProjectTitle={setProjectTitle}
+							user={user}
 						/>
 					</div>
 					<div className={styles.timer}>
