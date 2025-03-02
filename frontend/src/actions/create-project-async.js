@@ -4,9 +4,12 @@ import { setProjectData } from './set-project-data';
 export const createProjectAsync = (newProjectData) => (dispatch) => {
 	const saveRequest = request('/projects', 'POST', newProjectData);
 
-	return saveRequest.then(({ updatedProject }) => {
+	return saveRequest.then((updatedProject) => {
 		dispatch(setProjectData(updatedProject.data));
 
 		return updatedProject.data;
 	});
 };
+
+// id
+// 		? request(`/projects/${id}`, 'PATCH', newProjectData)
