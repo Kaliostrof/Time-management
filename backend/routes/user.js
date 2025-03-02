@@ -10,11 +10,15 @@ const authenticated = require("../middlewares/authenticated");
 const router = express.Router({ mergeParams: true });
 
 router.patch("/:id/date", authenticated, async (req, res) => {
-  const newUser = await updateUserBirthDate(req.params.id, {
-    date_of_birth: req.body.dateOfBirth,
-  });
+  try {
+    const newUser = await updateUserBirthDate(req.params.id, {
+      date_of_birth: req.body.dateOfBirth,
+    });
 
-  res.send({ data: mapUser(newUser) });
+    res.send({ data: mapUser(newUser) });
+  } catch (err) {
+    res.send({ error: err.message });
+  }
 });
 
 router.patch("/:id/login", authenticated, async (req, res) => {

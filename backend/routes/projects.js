@@ -29,19 +29,27 @@ router.get("/:id", authenticated, async (req, res) => {
 });
 
 router.post("/", authenticated, async (req, res) => {
-  const newProject = await addProject({
-    title: req.body.title,
-    author: req.user.id,
-  });
+  try {
+    const newProject = await addProject({
+      title: req.body.title,
+      author: req.user.id,
+    });
 
-  res.send({ data: newProject });
+    res.send({ data: newProject });
+  } catch (err) {
+    res.send({ error: err.message });
+  }
 });
 
 router.patch("/:id", authenticated, async (req, res) => {
-  const updatedProject = await editProject(req.params.id, {
-    title: req.body.title,
-  });
-  res.send({ data: mapProject(updatedProject) });
+  try {
+    const updatedProject = await editProject(req.params.id, {
+      title: req.body.title,
+    });
+    res.send({ data: mapProject(updatedProject) });
+  } catch (err) {
+    res.send({ error: err.message });
+  }
 });
 
 router.delete("/:id", authenticated, async (req, res) => {
@@ -51,13 +59,17 @@ router.delete("/:id", authenticated, async (req, res) => {
 });
 
 router.post("/:id/tasks", authenticated, async (req, res) => {
-  const newTask = await addTask(req.params.id, {
-    description: req.body.task,
-    time: req.body.time,
-    total_sec: req.body.totalSec,
-  });
+  try {
+    const newTask = await addTask(req.params.id, {
+      description: req.body.task,
+      time: req.body.time,
+      total_sec: req.body.totalSec,
+    });
 
-  res.send({ data: mapTask(newTask) });
+    res.send({ data: mapTask(newTask) });
+  } catch (err) {
+    res.send({ error: err.message });
+  }
 });
 
 router.delete("/:projectId/tasks/:taskId", authenticated, async (req, res) => {
