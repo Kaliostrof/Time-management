@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from 'react';
 import Select from 'react-select';
 import styles from './main.module.css';
-import { Icon, Loader } from '../../components';
+import { Button, Icon, Loader } from '../../components';
 import { request } from '../../utils';
 import { useDispatch } from 'react-redux';
 // import { selectUserLogin } from '../../selectors';
@@ -118,6 +118,20 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 				<Loader />
 			) : (
 				<div className={styles.card}>
+					{!user && (
+						<Button
+							type="button"
+							width="170px"
+							onClick={() => navigate('/login')}
+						>
+							<Icon
+								id="fa-arrow-circle-right"
+								size="28px"
+								margin="0 8px 0 0"
+							/>
+							Авторизация
+						</Button>
+					)}
 					<div className={styles['new-project']}>
 						<AddNewProject
 							onCreate={onCreate}
