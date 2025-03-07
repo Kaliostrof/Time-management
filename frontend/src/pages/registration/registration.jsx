@@ -25,7 +25,7 @@ const regFormSchema = yup.object().shape({
 			/^[\w#%]+$/,
 			'Неверно заполнен пароль. Допускаются только буквы и цифры.',
 		)
-		.min(6, 'Неверно заполнен пароль. Минимум 6 символа.')
+		.min(6, 'Неверно заполнен пароль. Минимум 6 символов.')
 		.max(20, 'Неверно заполнен пароль. Максимум 20 символа.'),
 	passcheck: yup
 		.string()
@@ -82,7 +82,8 @@ export const Registration = () => {
 	const formError =
 		errors?.login?.message ||
 		errors?.password?.message ||
-		errors?.dateOfBirth?.message;
+		errors?.dateOfBirth?.message ||
+		errors?.passcheck?.message;
 	const errorMessage = formError || serverError;
 
 	if (userLogin) {

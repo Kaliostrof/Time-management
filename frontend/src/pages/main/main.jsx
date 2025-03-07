@@ -29,7 +29,10 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 		if (usr) {
 			setIsLoading(true);
 			request('/projects', 'GET')
-				.then(({ data: { projects } }) => {
+				.then(({ data: { projects }, error }) => {
+					if (error) {
+						alert(error);
+					}
 					setMainProjects(projects);
 				})
 				.finally(() => setIsLoading(false));
@@ -100,10 +103,12 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 			}
 			const totalSec = sec;
 			event.preventDefault();
+			const projectId = selectedOption.id;
 			request(`/projects/${selectedOption.id}/tasks`, 'POST', {
 				task,
 				time,
 				totalSec,
+				projectId,
 			});
 			setTask('');
 			setIntervalId('');

@@ -1,4 +1,5 @@
 const Project = require("../models/Projects");
+const Tasks = require("../models/Tasks");
 
 //add
 async function addProject(project, id) {
@@ -17,6 +18,7 @@ async function editProject(id, project) {
 
 //delete
 async function deleteProject(id) {
+  await Tasks.deleteMany({ project_id: id });
   return Project.deleteOne({ _id: id });
 }
 

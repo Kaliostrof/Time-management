@@ -22,7 +22,10 @@ export const OneProject = () => {
 	useLayoutEffect(() => {
 		setIsLoading(true);
 		request(`/projects/${params.id}`)
-			.then(({ data }) => {
+			.then(({ data, error }) => {
+				if (error) {
+					alert(error);
+				}
 				dispatch(setProjectData(data));
 				setProjectTitle(project.title);
 			})

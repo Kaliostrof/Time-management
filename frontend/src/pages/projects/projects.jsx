@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import styles from './projects.module.css';
-import { useEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { debounce, request } from '../../utils';
 import { PAGINATION_LIMIT } from '../../constants';
 import { Pagination, Search, ProjectList } from './components';
@@ -13,20 +13,21 @@ export const Projects = ({ mainProjects, setMainProjects }) => {
 	const [lastPage, setLastPage] = useState([]);
 	const [shouldSearch, setShouldSearch] = useState(false);
 	const [searchPhrase, setSearchPhrase] = useState('');
-	const [isRefresh, setIsRefresh] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const dispatch = useDispatch();
-	// const isUser = useSelector(selectUserLogin);
 	const navigate = useNavigate();
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const usr = sessionStorage.getItem('userData');
 		if (usr) {
 			setIsLoading(true);
 			request(
 				`/projects/?search=${searchPhrase}&page=${page}&limit=${PAGINATION_LIMIT}`,
 			)
-				.then(({ data: { projects, lastPage } }) => {
+				.then(({ data: { projects, lastPage }, error }) => {
+					if (error) {
+						alert(error);
+					}
 					setMainProjects(projects);
 					setLastPage(lastPage);
 				})
@@ -34,7 +35,7 @@ export const Projects = ({ mainProjects, setMainProjects }) => {
 		} else {
 			navigate('/login');
 		}
-	}, [page, shouldSearch, setMainProjects, isRefresh]);
+	}, [page, shouldSearch, setMainProjects]);
 
 	const startDelayedSearch = useMemo(() => debounce(setShouldSearch, 2000), []);
 
@@ -48,9 +49,16 @@ export const Projects = ({ mainProjects, setMainProjects }) => {
 			openModal({
 				text: 'Удалить проект?',
 				onConfirm: () => {
-					dispatch(removeProjectAsync(id));
+					dispatch(removeProjectAsync(id)).then(
+						({ data: { projects, lastPage }, error }) => {
+							if (error) {
+								alert(error);
+							}
+							setMainProjects(projects);
+							setLastPage(lastPage);
+						},
+					);
 					dispatch(closeModal);
-					setIsRefresh(!isRefresh);
 				},
 				onCancel: () => dispatch(closeModal),
 			}),

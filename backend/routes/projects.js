@@ -14,18 +14,29 @@ const authenticated = require("../middlewares/authenticated");
 const router = express.Router({ mergeParams: true });
 
 router.get("/", authenticated, async (req, res) => {
-  const { projects, lastPage } = await getProjects(
-    req.user.id,
-    req.query.search,
-    req.query.limit,
-    req.query.page
-  );
-  res.send({ data: { lastPage, projects: projects.map(mapProject) } });
+  try {
+    const { projects, lastPage } = await getProjects(
+      req.user.id,
+      req.query.search,
+      req.query.limit,
+      req.query.page
+    );
+    res.send({
+      data: { lastPage, projects: projects.map(mapProject) },
+      error: null,
+    });
+  } catch (err) {
+    res.send({ error: err.message } || "Unknown error");
+  }
 });
 
 router.get("/:id", authenticated, async (req, res) => {
-  const project = await getProject(req.params.id);
-  res.send({ data: mapProject(project) });
+  try {
+    const project = await getProject(req.params.id);
+    res.send({ data: mapProject(project), error: null });
+  } catch (err) {
+    res.send({ error: err.message } || "Unknown error");
+  }
 });
 
 router.post("/", authenticated, async (req, res) => {
@@ -53,9 +64,22 @@ router.patch("/:id", authenticated, async (req, res) => {
 });
 
 router.delete("/:id", authenticated, async (req, res) => {
-  await deleteProject(req.params.id);
+  try {
+    await deleteProject(req.params.id);
+    const { projects, lastPage } = await getProjects(
+      req.user.id,
+      req.query.search,
+      req.query.limit,
+      req.query.page
+    );
 
-  res.send({ error: null });
+    res.send({
+      data: { lastPage, projects: projects.map(mapProject) },
+      error: null,
+    });
+  } catch (err) {
+    res.send({ error: err.message });
+  }
 });
 
 router.post("/:id/tasks", authenticated, async (req, res) => {
@@ -64,6 +88,7 @@ router.post("/:id/tasks", authenticated, async (req, res) => {
       description: req.body.task,
       time: req.body.time,
       total_sec: req.body.totalSec,
+      project_id: req.body.projectId,
     });
 
     res.send({ data: mapTask(newTask) });

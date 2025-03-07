@@ -15,7 +15,7 @@ router.patch("/:id/date", authenticated, async (req, res) => {
       date_of_birth: req.body.dateOfBirth,
     });
 
-    res.send({ data: mapUser(newUser) });
+    res.send({ error: null, data: mapUser(newUser) });
   } catch (err) {
     res.send({ error: err.message });
   }
@@ -27,7 +27,7 @@ router.patch("/:id/login", authenticated, async (req, res) => {
       login: req.body.login,
     });
 
-    res.send({ data: mapUser(newUser) });
+    res.send({ error: null, data: mapUser(newUser) });
   } catch (err) {
     res.send({ error: err.message } || "Unknown error");
   }

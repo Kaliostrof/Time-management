@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './profile.module.css';
 import * as yup from 'yup';
 import { selectUserDateOfBirth, selectUserId, selectUserLogin } from '../../selectors';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Icon } from '../../components';
 import { AuthFormError } from '../../components';
 import { request } from '../../utils';
@@ -43,7 +43,6 @@ export const Profile = () => {
 	const [serverError, setServerError] = useState(null);
 	const [isLoginEdit, setIsLoginEdit] = useState(false);
 	const [isDateEdit, setIsDateEdit] = useState(false);
-	// const [isPasswordEdit, setIsPasswordEdit] = useState(false);
 	const dispatch = useDispatch();
 	const userId = useSelector(selectUserId);
 	const userLogin = useSelector(selectUserLogin);
@@ -52,21 +51,26 @@ export const Profile = () => {
 		.reverse()
 		.join('-');
 
-	const [login, setLogin] = useState(userLogin);
+	const [login, setLogin] = useState('');
 	const [checkLogin, setCheckLogin] = useState(false);
 	const [checkBirthDate, setCheckBirthDate] = useState(false);
-	const [birthDate, setBirthDate] = useState(userDateOfBirth);
+	const [birthDate, setBirthDate] = useState();
 	const [oldPassword, setOldPassword] = useState('');
 	const [newPassword, setNewPassword] = useState('');
 	const [repeatPassword, setRepeatPassword] = useState('');
 	const [error, setError] = useState(null);
+	const [isRefresh, setIsRefresh] = useState(false);
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		const userData = sessionStorage.getItem('userData');
 		if (!userData) {
 			return;
+		} else {
+			const user = JSON.parse(userData);
+			setLogin(user.login);
+			setBirthDate(user.dateOfBirth);
 		}
-	}, []);
+	}, [isRefresh]);
 
 	const onLoginChange = ({ target }) => {
 		if (target.value !== userLogin) {
@@ -86,15 +90,17 @@ export const Profile = () => {
 	};
 
 	const onSaveLogin = () => {
-		request(`/users/${userId}/login`, 'PATCH', { login }).then(({ error, user }) => {
+		request(`/users/${userId}/login`, 'PATCH', { login }).then(({ error, data }) => {
 			if (error) {
 				setServerError(`Ошибка запроса: ${error}`);
 				return;
 			}
-			dispatch(setUser(user));
+			console.log('user:', data);
+			dispatch(setUser(data));
 			setCheckLogin(false);
 			setIsLoginEdit(false);
-			sessionStorage.setItem('userData', JSON.stringify(user));
+			setIsRefresh(!isRefresh);
+			sessionStorage.setItem('userData', JSON.stringify(data));
 		});
 	};
 
@@ -110,14 +116,15 @@ export const Profile = () => {
 	};
 	const onSaveBirthDate = () => {
 		request(`/users/${userId}/date`, 'PATCH', { dateOfBirth: birthDate }).then(
-			({ error, user }) => {
+			({ error, data }) => {
 				if (error) {
 					setServerError(`Ошибка запроса: ${error}`);
 					return;
 				}
-				dispatch(setUser(user));
+				dispatch(setUser(data));
 				setIsDateEdit(false);
-				sessionStorage.setItem('userData', JSON.stringify(user));
+				setIsRefresh(!isRefresh);
+				sessionStorage.setItem('userData', JSON.stringify(data));
 			},
 		);
 	};
@@ -155,7 +162,7 @@ export const Profile = () => {
 	};
 
 	const onSavePassword = () => {
-		// setIsPasswordEdit(true);
+		event.preventDefault();
 		request(`/users/${userId}/password`, 'PATCH', {
 			login,
 			oldPassword,
@@ -163,16 +170,13 @@ export const Profile = () => {
 		}).then(({ error }) => {
 			if (error) {
 				setServerError(`Ошибка запроса: ${error}`);
-				// setIsPasswordEdit(false);
 				return;
+			} else {
+				setOldPassword('');
+				setNewPassword('');
+				setRepeatPassword('');
+				setError('Пароль изменён!');
 			}
-			// setIsPasswordEdit(false);
-			setError('Пароль изменён');
-			setOldPassword('');
-			setNewPassword('');
-			setRepeatPassword('');
-			// dispatch(setUser(user));
-			// sessionStorage.setItem('userData', JSON.stringify(user));
 		});
 	};
 
@@ -222,7 +226,12 @@ export const Profile = () => {
 								id="fa-pencil-square-o"
 								size="18px"
 								margin="0 8px 0 0"
-								disabled={isDateEdit}
+								disabled={
+									isDateEdit ||
+									oldPassword ||
+									newPassword ||
+									repeatPassword
+								}
 								onClick={() => setIsLoginEdit(true)}
 							/>
 						)}
@@ -235,7 +244,7 @@ export const Profile = () => {
 						mask="00.00.0000"
 						className={styles.input}
 						type="date"
-						value={birthDate}
+						value={birthDate || userDateOfBirth}
 						onChange={onBirthDateChange}
 						disabled={!isDateEdit}
 					/>
@@ -262,7 +271,12 @@ export const Profile = () => {
 								id="fa-pencil-square-o"
 								size="18px"
 								margin="0 8px 0 0"
-								disabled={isLoginEdit}
+								disabled={
+									isLoginEdit ||
+									oldPassword ||
+									newPassword ||
+									repeatPassword
+								}
 								onClick={() => setIsDateEdit(true)}
 							/>
 						)}
@@ -300,7 +314,10 @@ export const Profile = () => {
 						width="175px"
 						onClick={onSavePassword}
 						disabled={
-							!!error || !(oldPassword && newPassword && repeatPassword)
+							!!error ||
+							!(oldPassword && newPassword && repeatPassword) ||
+							isLoginEdit ||
+							isDateEdit
 						}
 					>
 						Изменить пароль
