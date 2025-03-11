@@ -4,10 +4,8 @@ import styles from './main.module.css';
 import { Button, Icon, Loader } from '../../components';
 import { request } from '../../utils';
 import { useDispatch } from 'react-redux';
-// import { selectUserLogin } from '../../selectors';
 import { useNavigate } from 'react-router-dom';
-import { Tooltip } from '../../components/tooltip/tooltip';
-import { AddNewProject } from '../projects/components';
+import { AddNewProject, Timer } from './components';
 import { createProjectAsync } from '../../actions';
 
 export const Main = ({ mainProjects, setMainProjects }) => {
@@ -19,7 +17,6 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [projectTitle, setProjectTitle] = useState('');
 	const [isRefresh, setIsRefresh] = useState(false);
-	// const isUser = useSelector(selectUserLogin);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const user = sessionStorage.getItem('userData');
@@ -143,39 +140,16 @@ export const Main = ({ mainProjects, setMainProjects }) => {
 							projectTitle={projectTitle}
 							setProjectTitle={setProjectTitle}
 							user={user}
+							isPlay={isPlay}
 						/>
 					</div>
-					<div className={styles.timer}>
-						<div className={styles.text}>
-							{`${time.hr.toString().padStart(2, '0')}:${time.min.toString().padStart(2, '0')}:${time.sec.toString().padStart(2, '0')}`}
-						</div>
-						<div className={styles.buttons}>
-							<Tooltip text="Выберите проект и заполните описание">
-								<Icon
-									id="fa-play-circle-o"
-									margin=" 0 10px 0 10px"
-									onClick={onPlay}
-									disabled={isPlay}
-								/>
-							</Tooltip>
-							<Tooltip customClass={styles['tooltip-min']} text="Пауза">
-								<Icon
-									id="fa-pause-circle-o"
-									margin=" 0 10px 0 10px"
-									onClick={onPause}
-									disabled={!isPlay}
-								/>
-							</Tooltip>
-							<Tooltip text="Завершает таймер и сохраняет данные">
-								<Icon
-									id="fa-stop-circle-o"
-									margin=" 0 10px 0 10px"
-									onClick={onStop}
-									disabled={!isPlay}
-								/>
-							</Tooltip>
-						</div>
-					</div>
+					<Timer
+						onStop={onStop}
+						onPause={onPause}
+						onPlay={onPlay}
+						isPlay={isPlay}
+						time={time}
+					/>
 					<Select
 						defaultValue={selectedOption}
 						onChange={setSelectedOption}

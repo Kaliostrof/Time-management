@@ -90,12 +90,14 @@ export const Profile = () => {
 	};
 
 	const onSaveLogin = () => {
+		if (!!error || !checkLogin) {
+			return;
+		}
 		request(`/users/${userId}/login`, 'PATCH', { login }).then(({ error, data }) => {
 			if (error) {
 				setServerError(`Ошибка запроса: ${error}`);
 				return;
 			}
-			console.log('user:', data);
 			dispatch(setUser(data));
 			setCheckLogin(false);
 			setIsLoginEdit(false);
@@ -115,6 +117,9 @@ export const Profile = () => {
 		setBirthDate(date);
 	};
 	const onSaveBirthDate = () => {
+		if (!!error || !checkBirthDate) {
+			return;
+		}
 		request(`/users/${userId}/date`, 'PATCH', { dateOfBirth: birthDate }).then(
 			({ error, data }) => {
 				if (error) {
@@ -180,12 +185,18 @@ export const Profile = () => {
 		});
 	};
 
-	const onCancelDateEdit = () => {
-		setIsDateEdit(false);
+	const dateEdit = () => {
+		if (isLoginEdit || oldPassword || newPassword || repeatPassword) {
+			return;
+		}
+		setIsDateEdit(true);
 	};
 
-	const onCancelLoginEdit = () => {
-		setIsLoginEdit(false);
+	const loginEdit = () => {
+		if (isDateEdit || oldPassword || newPassword || repeatPassword) {
+			return;
+		}
+		setIsLoginEdit(true);
 	};
 
 	const errorMessage = error || serverError;
@@ -218,7 +229,10 @@ export const Profile = () => {
 									id="fa-times-circle-o"
 									size="18px"
 									margin="0 8px 0 0"
-									onClick={onCancelLoginEdit}
+									onClick={() => {
+										setIsLoginEdit(false);
+										setLogin(userLogin);
+									}}
 								/>
 							</div>
 						) : (
@@ -232,7 +246,7 @@ export const Profile = () => {
 									newPassword ||
 									repeatPassword
 								}
-								onClick={() => setIsLoginEdit(true)}
+								onClick={loginEdit}
 							/>
 						)}
 					</div>
@@ -263,7 +277,10 @@ export const Profile = () => {
 									id="fa-times-circle-o"
 									size="18px"
 									margin="0 8px 0 0"
-									onClick={onCancelDateEdit}
+									onClick={() => {
+										setIsDateEdit(false);
+										setBirthDate(userDateOfBirth);
+									}}
 								/>
 							</div>
 						) : (
@@ -277,7 +294,7 @@ export const Profile = () => {
 									newPassword ||
 									repeatPassword
 								}
-								onClick={() => setIsDateEdit(true)}
+								onClick={dateEdit}
 							/>
 						)}
 					</div>

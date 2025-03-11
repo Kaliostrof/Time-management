@@ -9,6 +9,12 @@ async function register(login, password, date_of_birth) {
   }
   const passwordHash = await bcrypt.hash(password, 10);
 
+  const isUser = await User.findOne({ login }); // ищем пользователя по логину
+
+  if (isUser) {
+    throw new Error("Этот логин занят, попробуйте другой!");
+  }
+
   const user = await User.create({
     login,
     password: passwordHash,

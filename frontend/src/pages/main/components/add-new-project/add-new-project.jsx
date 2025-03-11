@@ -1,7 +1,13 @@
 import { Button, Icon, Input } from '../../../../components';
 import styles from './add-new-project.module.css';
 
-export const AddNewProject = ({ onCreate, projectTitle, setProjectTitle, user }) => {
+export const AddNewProject = ({
+	onCreate,
+	projectTitle,
+	setProjectTitle,
+	user,
+	isPlay,
+}) => {
 	return (
 		<div className={styles['new-project']}>
 			<Input
@@ -9,7 +15,7 @@ export const AddNewProject = ({ onCreate, projectTitle, setProjectTitle, user })
 				value={projectTitle}
 				height="30px"
 				margin="0 10px 0 0"
-				disabled={!user}
+				disabled={!user || isPlay}
 				onChange={(event) => setProjectTitle(event.target.value)}
 				placeholder={!user ? 'Сперва авторизуйтесь' : 'Создайте новый проект'}
 			></Input>
@@ -17,13 +23,13 @@ export const AddNewProject = ({ onCreate, projectTitle, setProjectTitle, user })
 				type="button"
 				width="110px"
 				onClick={onCreate}
-				disabled={!projectTitle}
+				disabled={!projectTitle || isPlay}
 			>
 				Создать
 				<Icon
 					id="fa-plus-square-o"
 					margin=" 4px 0 0 10px"
-					disabled={!projectTitle}
+					disabled={!projectTitle || isPlay}
 				/>
 			</Button>
 		</div>

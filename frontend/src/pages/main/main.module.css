@@ -27,24 +27,6 @@
 	pointer-events: none;
 }
 
-.timer {
-	display: flex;
-	width: 90%;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 10px;
-}
-
-.text {
-	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-	font-size: 30px;
-}
-
-.buttons {
-	display: flex;
-	justify-content: space-between;
-}
-
 .btn-timer {
 	padding: 0;
 	margin-left: 4px;
